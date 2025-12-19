@@ -13,8 +13,8 @@ class Sale extends Model
         'product_id',
         'quantity',
         'price',
-        'total',
         'sale_date',
+        'total_amount',
     ];
 
     public function user()
@@ -77,6 +77,15 @@ class Sale extends Model
         $product->decrement('stock', $data['quantity']);
 
         return $data;
+    }
+
+    protected function afterCreate(): void
+    {
+        $sale = $this->record;
+
+        $sale->update([
+            'total_amount' => $sale->salesItems()->sum('total'),
+        ]);
     }
 
     protected static function booted()

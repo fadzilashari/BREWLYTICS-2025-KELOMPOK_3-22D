@@ -27,7 +27,6 @@ class TransactionResource extends Resource
 
     protected static ?int $navigationGroupSort = 2;
 
-
     protected static ?string $navigationLabel = 'Daftar Transaksi';
 
     protected static ?string $recordTitleAttribute = 'Product';

@@ -10,7 +10,7 @@ class TotalSalesStats extends StatsOverviewWidget
 {
     protected function getStats(): array
     {
-        $totalSales = Sale::sum('total');
+        $totalSales = Sale::sum('total_amount');
 
         return [
             Stat::make('Total Penjualan', 'Rp ' . number_format($totalSales, 0, ',', '.'))

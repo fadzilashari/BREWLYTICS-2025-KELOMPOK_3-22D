@@ -19,6 +19,11 @@ class Product extends Model
         return $this->hasMany(Sale::class);
     }
 
+    public function forecasts()
+    {
+        return $this->hasMany(Forecast::class);
+    }
+
     use LogsActivity;
 
     protected static $logFillable = true;      // Record all fillable attributes
