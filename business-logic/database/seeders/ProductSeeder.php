@@ -14,77 +14,49 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('products')->insert([
-            [
-                'name' => 'Nasi Goreng Spesial',
-                'price' => 25000,
-                'stock' => 50,
+        $products = [
+            ['name' => 'Kopi Hitam (Hot)', 'price' => 6000],
+            ['name' => 'Kopi Susu (Hot)', 'price' => 8000],
+            ['name' => 'Kopi Susu (Ice)', 'price' => 10000],
+            ['name' => 'Cappucino (Hot)', 'price' => 8000],
+            ['name' => 'Cappucino (Ice)', 'price' => 10000],
+            ['name' => 'Vanila Latte (Hot)', 'price' => 13000],
+            ['name' => 'Vanila Latte (Ice)', 'price' => 15000],
+            ['name' => 'Gula Aren (Hot)', 'price' => 13000],
+            ['name' => 'Gula Aren (Ice)', 'price' => 15000],
+            ['name' => 'Simple Caramel (Hot)', 'price' => 13000],
+            ['name' => 'Simple Caramel (Ice)', 'price' => 15000],
+            ['name' => 'Kopi Botol', 'price' => 15000],
+            ['name' => 'Dynamic Iceland', 'price' => 15000],
+            ['name' => 'Galaxy', 'price' => 15000],
+            ['name' => 'Green Squash', 'price' => 15000],
+            ['name' => 'Choco Milo Dino', 'price' => 12000],
+            ['name' => 'Choco Latte Milk', 'price' => 12000],
+            ['name' => 'Redvelvet Milk', 'price' => 12000],
+            ['name' => 'Macha Milk', 'price' => 13000],
+            ['name' => 'Air Mineral (Hot)', 'price' => 4000],
+            ['name' => 'Air Mineral (Ice)', 'price' => 5000],
+            ['name' => 'Teh (Hot)', 'price' => 4000],
+            ['name' => 'Teh (Ice)', 'price' => 5000],
+            ['name' => 'Jeruk Peras (Hot)', 'price' => 5000],
+            ['name' => 'Jeruk Peras (Ice)', 'price' => 6000],
+            ['name' => 'Lemon Tea (Hot)', 'price' => 7000],
+            ['name' => 'Lemon Tea (Ice)', 'price' => 8000],
+            ['name' => 'Bandrek Susu', 'price' => 15000],
+            ['name' => 'Jahe Susu', 'price' => 12000],
+            ['name' => 'Kukubima Susu', 'price' => 10000],
+            ['name' => 'ExtraJoss Susu', 'price' => 10000],
+            ['name' => 'Badak', 'price' => 20000],
+            ['name' => 'TST (Teh Susu Telor)', 'price' => 15000],
+            ['name' => 'Es Batu', 'price' => 1000],
+        ];
+
+        foreach ($products as $product) {
+            DB::table('products')->insert(array_merge($product, [
+                'stock' => rand(10, 20),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-            ],
-            [
-                'name' => 'Mie Ayam Bakso',
-                'price' => 22000,
-                'stock' => 40,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'name' => 'Ayam Geprek',
-                'price' => 23000,
-                'stock' => 45,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'name' => 'Sate Ayam',
-                'price' => 30000,
-                'stock' => 35,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'name' => 'Bakso Urat',
-                'price' => 20000,
-                'stock' => 60,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'name' => 'Es Teh Manis',
-                'price' => 5000,
-                'stock' => 100,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'name' => 'Es Jeruk',
-                'price' => 8000,
-                'stock' => 80,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'name' => 'Kopi Hitam',
-                'price' => 12000,
-                'stock' => 70,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'name' => 'Teh Hangat',
-                'price' => 6000,
-                'stock' => 90,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'name' => 'Jus Alpukat',
-                'price' => 15000,
-                'stock' => 55,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-        ]);
+            ]));
+        }
     }
 }

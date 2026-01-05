@@ -10,6 +10,7 @@ use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use App\Services\ForecastService;
 use Filament\Notifications\Notification;
+use App\Models\Forecast;
 
 class ForecastsTable
 {
@@ -17,49 +18,61 @@ class ForecastsTable
     {
         return $table
             ->columns([
-                TextColumn::make('product.name')
-                    ->label('Product')
-                    ->sortable()
-                    ->searchable(),
-
-                TextColumn::make('forecast_qty')
-                    ->label('Forecast Qty')
+                TextColumn::make('generated_at')
+                    ->label('Generated At')
+                    ->dateTime()
                     ->sortable(),
 
+                TextColumn::make('file_name')
+                    ->label('File Name')
+                    ->searchable(),
+
                 TextColumn::make('period_days')
-                    ->label('Days'),
-
-                TextColumn::make('forecast_start')
-                    ->date(),
-
-                TextColumn::make('forecast_end')
-                    ->date(),
+                    ->label('Period (Days)'),
             ])
+            ->defaultSort('generated_at', 'desc')
             ->filters([
                 //
             ])
             ->recordActions([
-                EditAction::make(),
+                Action::make('download_pdf')
+                    ->label('Download')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->color('success')
+                    ->url(fn (\App\Models\ForecastReport $record) => asset('storage/' . $record->file_path))
+                    ->openUrlInNewTab(),
+                
+                DeleteBulkAction::make(),
             ])
             ->toolbarActions([
                 Action::make('generate')
-                    ->label('Generate Forecast')
+                    ->label('Generate New Forecast')
                     ->icon('heroicon-o-cpu-chip')
                     ->requiresConfirmation()
                     ->action(function () {
-                        fn() =>
-                        app(ForecastService::class)->generate(30);
+                        try {
+                            // Execute directly (synchronous)
+                            app(ForecastService::class)->generate(30);
 
-                        Notification::make()
-                            ->title('Forecasting started')
-                            ->body('Forecast is running in background.')
-                            ->success()
-                            ->send();
+                            // Log aktivitas manual
+                            activity()
+                                ->log('Menjalankan forecast');
+
+                            Notification::make()
+                                ->title('Forecasting started')
+                                ->body('New report generated successfully.')
+                                ->success()
+                                ->send();
+                        } catch (\Exception $e) {
+                            \Log::error('Forecast generation failed: ' . $e->getMessage());
+                            
+                            Notification::make()
+                                ->title('Forecast generation failed')
+                                ->body($e->getMessage())
+                                ->danger()
+                                ->send();
+                        }
                     }),
-
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
             ]);
     }
 }

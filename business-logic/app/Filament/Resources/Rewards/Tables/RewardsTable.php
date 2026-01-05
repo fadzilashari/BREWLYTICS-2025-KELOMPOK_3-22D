@@ -18,12 +18,20 @@ class RewardsTable
                     ->searchable()
                     ->sortable(),
 
-                TextColumn::make('description') // Product Price in the list
-                    ->searchable()
+                TextColumn::make('rating')
+                    ->label('Rating')
+                    ->formatStateUsing(fn (int $state): string => str_repeat('⭐', $state))
+                    ->color('warning')
                     ->sortable(),
 
-                TextColumn::make('review_date') // Product Stock in the list
+                TextColumn::make('description')
+                    ->label('Deskripsi')
                     ->searchable()
+                    ->limit(50),
+
+                TextColumn::make('review_date')
+                    ->label('Tanggal')
+                    ->dateTime('d M Y H:i')
                     ->sortable(),
             ])
 

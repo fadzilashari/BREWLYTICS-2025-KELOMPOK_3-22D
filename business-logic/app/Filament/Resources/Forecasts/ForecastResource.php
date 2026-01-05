@@ -13,11 +13,12 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
 class ForecastResource extends Resource
 {
-    protected static ?string $model = Forecast::class;
+    protected static ?string $model = \App\Models\ForecastReport::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
@@ -51,5 +52,10 @@ class ForecastResource extends Resource
             'create' => CreateForecast::route('/create'),
             'edit' => EditForecast::route('/{record}/edit'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()?->roles->whereIn('name', ['admin', 'owner'])->isNotEmpty() ?? false;
     }
 }

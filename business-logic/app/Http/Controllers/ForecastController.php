@@ -28,7 +28,8 @@ class ForecastController extends Controller
         ", [$productId]);
 
         // Panggil API Python (FastAPI)
-        $response = Http::timeout(30)->post('http://localhost:8000/forecast', [
+        $port = env('FASTAPI_PORT', 8025);
+        $response = Http::timeout(30)->post("http://localhost:{$port}/forecast", [
             'product_id' => $productId,
             'data' => $data,
             'forecast_days' => 30,
@@ -42,5 +43,43 @@ class ForecastController extends Controller
         }
 
         return response()->json($response->json());
+    }
+
+    public function generateFromDb($productId)
+    {
+        $port = env('FASTAPI_PORT', 8025);
+        
+        // Panggil endpoint baru yang membaca langsung dari DB
+        $response = Http::timeout(30)->post("http://localhost:{$port}/forecast-from-db/{$productId}", [
+            'days' => 30
+        ]);
+
+        if (!$response->successful()) {
+            return response()->json([
+                'message' => 'Forecast service unavailable or error in processing',
+                'details' => $response->json()
+            ], $response->status());
+        }
+
+    }
+
+    public function downloadPdf($productId)
+    {
+        $port = env('FASTAPI_PORT', 8025);
+        $url = "http://localhost:{$port}/forecast-pdf/{$productId}";
+
+        // Use Http client with longer timeout (e.g., 120 seconds)
+        // because forecasting might take time if the server is busy.
+        return response()->streamDownload(function () use ($url) {
+            $response = Http::timeout(120)->get($url);
+            
+            if ($response->successful()) {
+                echo $response->body();
+            } else {
+                // If failed, maybe output error or nothing (client will see empty/broken PDF)
+                // Ideally we should handle this better, but for streamDownload this is tricky.
+                echo "Error generating PDF: " . $response->status();
+            }
+        }, "forecast_{$productId}.pdf");
     }
 }

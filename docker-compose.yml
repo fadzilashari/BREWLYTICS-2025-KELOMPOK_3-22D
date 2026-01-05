@@ -1,0 +1,80 @@
+services:
+  # 1. Laravel App (PHP-FPM)
+  app:
+    build:
+      context: ./business-logic
+      dockerfile: Dockerfile
+    image: forecast-system-app
+    container_name: forecast-app
+    restart: unless-stopped
+    working_dir: /var/www
+    env_file:
+      - ./business-logic/.env
+    volumes:
+      - ./business-logic:/var/www
+    networks:
+      - forecast-network
+    depends_on:
+      - db
+
+  # 2. Web Server (Nginx)
+  web:
+    image: nginx:alpine
+    container_name: forecast-web
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./business-logic:/var/www
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+    networks:
+      - forecast-network
+    depends_on:
+      - app
+
+  # 3. AI Service (Python FastAPI)
+  ai-service:
+    build:
+      context: ./artificial-intelligence-logic
+      dockerfile: Dockerfile
+    image: forecast-system-ai
+    container_name: forecast-ai
+    restart: unless-stopped
+    working_dir: /app
+    env_file:
+      - ./artificial-intelligence-logic/.env
+    ports:
+      - "8025:8025"
+    # volumes:
+    #   - ./artificial-intelligence-logic:/app
+    networks:
+      - forecast-network
+    depends_on:
+      - db
+
+  # 4. Database (MySQL)
+  db:
+    image: mysql:8.0
+    container_name: forecast-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: db_forecast
+      MYSQL_ROOT_PASSWORD: root
+      # MYSQL_USER: root
+      # MYSQL_PASSWORD: root
+      # MYSQL_ALLOW_EMPTY_PASSWORD: no
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - db-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - forecast-network
+
+networks:
+  forecast-network:
+    driver: bridge
+
+volumes:
+  db-data:

@@ -6,7 +6,7 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages\Dashboard;
+use App\Filament\Pages as CustomPages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -28,21 +28,26 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('dashboard')
             ->brandName('Brewlytics')
-            // Using default Breeze auth
-            // ->login()
             ->profile()
             ->colors([
                 'primary' => Color::Amber,
             ])
-            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
-            ->pages([
-                Dashboard::class,
+            ->resources([
+                \App\Filament\Resources\Forecasts\ForecastResource::class,
+                \App\Filament\Resources\Products\ProductResource::class,
+                \App\Filament\Resources\Sales\SaleResource::class,
+                \App\Filament\Resources\Transactions\TransactionResource::class,
+                \App\Filament\Resources\ActivityLogs\ActivityLogResource::class,
+                \App\Filament\Resources\Rewards\RewardResource::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
+            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            ->pages([
+                CustomPages\Dashboard::class,
+            ])
+            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                // AccountWidget::class, // Enable if you want account info in sidebar
-                // FilamentInfoWidget::class, // Enable if you want Filament info widget on dashboard
+                // AccountWidget::class,
+                // FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -55,9 +60,7 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
-
             ->authMiddleware([
-                // Using default Breeze auth
                 Authenticate::class,
             ]);
     }

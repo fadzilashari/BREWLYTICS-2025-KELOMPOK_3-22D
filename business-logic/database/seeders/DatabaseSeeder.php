@@ -10,6 +10,7 @@ use Database\Seeders\SaleSeeder;
 use Database\Seeders\SalesItemsSeeder;
 use Database\Seeders\RoleSeeder;
 use Database\Seeders\DummyUserSeeder;
+use Database\Seeders\RewardSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -22,10 +23,12 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             RoleSeeder::class,
-            DummyUserSeeder::class,
+            UserSeeder::class,
             ProductSeeder::class,
+            ProductWithHistorySeeder::class,
             SaleSeeder::class,
             SalesItemsSeeder::class,
+            RewardSeeder::class,
         ]);
     }
 }

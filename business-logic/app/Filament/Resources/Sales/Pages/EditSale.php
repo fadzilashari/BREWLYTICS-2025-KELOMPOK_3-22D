@@ -29,9 +29,13 @@ class EditSale extends EditRecord
     {
         $sale = $this->record;
 
+        // Update total_amount dari items (dobel proteksi)
+        $sale->updateTotalAmount();
+        $sale->refresh();
+
         Transaction::create([
             'sale_id' => $sale->id,
-            'amount'  => $sale->total,
+            'amount'  => $sale->total_amount,
             'user_id' => Auth::id(),
             'type'    => 'update'
         ]);

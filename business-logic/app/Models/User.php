@@ -8,11 +8,22 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
+
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
     use HasRoles; // from spatie/laravel-permission
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        // For production, you might want to restrict this further
+        // e.g., return $this->hasRole('admin');
+        // For now, allow all registered users to access the panel
+        return true;
+    }
 
     /**
      * The attributes that are mass assignable.

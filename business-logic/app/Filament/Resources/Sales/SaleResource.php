@@ -11,25 +11,40 @@ use App\Models\Sale;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
+use Filament\Navigation\NavigationItem;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
 class SaleResource extends Resource
 {
     protected static ?string $model = Sale::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-
     protected static ?int $navigationSort = 20;
 
-    protected static ?int $navigationGroupSort = 20;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-list-bullet';
 
-    protected static ?string $navigationLabel = 'Input Penjualan';
-
-    protected static ?string $recordTitleAttribute = 'Sales';
+    protected static ?string $navigationLabel = 'Daftar Penjualan';
 
     protected static string | UnitEnum | null $navigationGroup = 'Bill';
+
+    public static function getNavigationItems(): array
+    {
+        return [
+            NavigationItem::make('Daftar Penjualan')
+                ->group(static::$navigationGroup)
+                ->icon('heroicon-o-list-bullet')
+                ->sort(static::$navigationSort)
+                ->url(static::getUrl('index')),
+            NavigationItem::make('Tambah Penjualan')
+                ->group(static::$navigationGroup)
+                ->icon('heroicon-o-plus-circle')
+                ->sort(static::$navigationSort + 1)
+                ->url(static::getUrl('create')),
+        ];
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -55,5 +70,20 @@ class SaleResource extends Resource
             'create' => CreateSale::route('/create'),
             'edit' => EditSale::route('/{record}/edit'),
         ];
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return auth()->user()?->roles->whereIn('name', ['admin', 'owner'])->isNotEmpty() ?? false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return auth()->user()?->roles->whereIn('name', ['admin', 'owner'])->isNotEmpty() ?? false;
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        return auth()->user()?->roles->whereIn('name', ['admin', 'owner'])->isNotEmpty() ?? false;
     }
 }

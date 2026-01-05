@@ -24,13 +24,18 @@ class CreateSale extends CreateRecord
         return $data;
     }
 
-    protected function afterSave(): void
+    protected function afterCreate(): void
     {
         $sale = $this->record;
 
+        // Hitung total_amount dari items (dobel proteksi)
+        $sale->updateTotalAmount();
+        $sale->refresh();
+
+        // Buat record transaksi
         Transaction::create([
             'sale_id' => $sale->id,
-            'amount'  => $sale->total,
+            'amount'  => $sale->total_amount,
             'user_id' => Auth::id(),
             'type'    => 'sale'
         ]);

@@ -5,17 +5,26 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Sale extends Model
 {
+    use LogsActivity;
+
     protected $fillable = [
         'user_id',
-        'product_id',
-        'quantity',
-        'price',
         'sale_date',
         'total_amount',
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logFillable()
+            ->logOnlyDirty()
+            ->useLogName('sale');
+    }
 
     public function user()
     {
@@ -37,64 +46,23 @@ class Sale extends Model
         return $this->hasOne(Transaction::class);
     }
 
-    // public static function mutateFormDataBeforeCreate(array $data): array
-    // {
-    //     $data['total'] = $data['quantity'] * $data['price'];
-    //     return $data;
-    // }
-
-    // protected function mutateFormDataBeforeCreate(array $data): array
-    // {
-    //     $data['created_by'] = Auth::id();
-
-    //     $product = Product::findOrFail($data['id']);
-
-    //     // Kurangi stok
-    //     $product->product_stock -= $data['quantity'];
-    //     $product->save();
-
-    //     return $data;
-    // }
-
-    // public static function mutateFormDataBeforeSave(array $data): array
-    // {
-    //     $data['total'] = $data['quantity'] * $data['price'];
-    //     return $data;
-    // }
-
-    protected function mutateFormDataBeforeCreate(array $data): array
-    {
-        $data['user_id'] = Auth::id();
-
-        $product = Product::findOrFail($data['product_id']);
-
-        if ($product->stock < $data['quantity']) {
-            throw ValidationException::withMessages([
-                'quantity' => 'Stok tidak mencukupi.',
-            ]);
-        }
-
-        $product->decrement('stock', $data['quantity']);
-
-        return $data;
-    }
-
-    protected function afterCreate(): void
-    {
-        $sale = $this->record;
-
-        $sale->update([
-            'total_amount' => $sale->salesItems()->sum('total'),
-        ]);
-    }
-
     protected static function booted()
     {
-        // static::creating(function ($sale) {
-        //     $sale->total = $sale->quantity * $sale->price; // Calculate total before creating
-        //     if (Auth::check()) {
-        //         $sale->user_id = Auth::id(); // Set the user_id to the currently authenticated user
-        //     }
-        // });
+        static::creating(function ($sale) {
+            if (empty($sale->sale_date)) {
+                $sale->sale_date = now();
+            }
+            
+            if (empty($sale->user_id) && Auth::check()) {
+                $sale->user_id = Auth::id();
+            }
+        });
+    }
+
+    public function updateTotalAmount(): void
+    {
+        $this->update([
+            'total_amount' => $this->salesItems()->sum('total'),
+        ]);
     }
 }

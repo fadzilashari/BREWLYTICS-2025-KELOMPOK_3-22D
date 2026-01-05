@@ -12,6 +12,7 @@ class Forecast extends Model
         'period_days',
         'forecast_start',
         'forecast_end',
+        'file_path',
     ];
 
     public function product()
