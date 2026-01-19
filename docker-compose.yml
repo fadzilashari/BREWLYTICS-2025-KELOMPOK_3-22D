@@ -1,5 +1,20 @@
 services:
-  # 1. Laravel App (PHP-FPM)
+  # 1. Web Server (Nginx)
+  web:
+    image: nginx:alpine
+    container_name: forecast-web
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./business-logic:/var/www
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+    networks:
+      - forecast-network
+    depends_on:
+      - app
+
+  # 2. Laravel App (PHP-FPM)
   app:
     build:
       context: ./business-logic
@@ -16,21 +31,6 @@ services:
       - forecast-network
     depends_on:
       - db
-
-  # 2. Web Server (Nginx)
-  web:
-    image: nginx:alpine
-    container_name: forecast-web
-    restart: unless-stopped
-    ports:
-      - "8000:80"
-    volumes:
-      - ./business-logic:/var/www
-      - ./docker/nginx/conf.d:/etc/nginx/conf.d
-    networks:
-      - forecast-network
-    depends_on:
-      - app
 
   # 3. AI Service (Python FastAPI)
   ai-service:

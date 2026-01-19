@@ -1,0 +1,28 @@
+# IDEs and Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+.zed/
+.fleet/
+.nova/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Docker
+.docker/
+
+# Local Environment
+.env
+.env.*
+
+# Databases (Local/Docker)
+docker/mysql/data/
+*.sql
+*.sqlite
+
+# Logs
+*.log

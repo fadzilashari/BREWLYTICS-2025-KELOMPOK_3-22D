@@ -36,7 +36,7 @@ Sistem komprehensif untuk manajemen penjualan, pelacakan stok inventaris, dan pe
 1. **Clone repositori**:
    ```bash
    git clone <repository-url>
-   cd forecast-system
+   cd forecast-management-system
    ```
 
 2. **Konfigurasi Lingkungan (.env)**:
@@ -45,7 +45,7 @@ Sistem komprehensif untuk manajemen penjualan, pelacakan stok inventaris, dan pe
 
 3. **Jalankan Kontainer**:
    ```bash
-   docker-compose up -d --build
+   docker compose up -d --build
    ```
 
 4. **Inisialisasi Aplikasi Laravel**:
@@ -96,26 +96,26 @@ Perbarui nilai kritikal di `.env.production`:
 - `APP_ENV=production`
 
 ### 2. Perbarui Password Docker Compose
-Edit `docker-compose.prod.yml` dan ubah nilai `MYSQL_ROOT_PASSWORD` serta `MYSQL_PASSWORD`.
+Edit `docker compose.prod.yml` dan ubah nilai `MYSQL_ROOT_PASSWORD` serta `MYSQL_PASSWORD`.
 
 ### 3. Build & Jalankan Layanan
 ```bash
-docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+docker compose -f docker compose.yml -f docker compose.prod.yml up -d --build
 ```
 
 ### 4. Inisialisasi Data Produksi
 ```bash
 # Generate key
-docker-compose exec app php artisan key:generate
+docker compose exec app php artisan key:generate
 
 # Jalankan migrasi & seed
-docker-compose exec app php artisan migrate --force
-docker-compose exec app php artisan db:seed --class=ProductWithHistorySeeder
+docker compose exec app php artisan migrate --force
+docker compose exec app php artisan db:seed --class=ProductWithHistorySeeder
 
 # Optimasi untuk produksi
-docker-compose exec app php artisan config:cache
-docker-compose exec app php artisan route:cache
-docker-compose exec app php artisan view:cache
+docker compose exec app php artisan config:cache
+docker compose exec app php artisan route:cache
+docker compose exec app php artisan view:cache
 ```
 
 ### 5. Setup SSL / HTTPS (Direkomendasikan)
@@ -134,19 +134,19 @@ Buat script backup dan tambahkan ke crontab:
 ```bash
 #!/bin/bash
 DATE=$(date +%Y%m%d_%H%M%S)
-docker-compose exec -T db mysqldump -u root -p$DB_ROOT_PASSWORD db_forecast > backups/backup_$DATE.sql
+docker compose exec -T db mysqldump -u root -p$DB_ROOT_PASSWORD db_forecast > backups/backup_$DATE.sql
 ```
 
 ### 📊 Pemantauan Log
-- **Semua layanan**: `docker-compose logs -f`
-- **Log Laravel**: `docker-compose exec app tail -f storage/logs/laravel.log`
+- **Semua layanan**: `docker compose logs -f`
+- **Log Laravel**: `docker compose exec app tail -f storage/logs/laravel.log`
 
 ### 🔄 Pembaruan (Updates)
 ```bash
 git pull
-docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
-docker-compose exec app php artisan migrate --force
-docker-compose exec app php artisan optimize
+docker compose -f docker compose.yml -f docker compose.prod.yml up -d --build
+docker compose exec app php artisan migrate --force
+docker compose exec app php artisan optimize
 ```
 
 ---
@@ -157,8 +157,8 @@ docker-compose exec app php artisan optimize
 ├── business-logic/          # Aplikasi Laravel (Backend & Admin Panel)
 ├── artificial-intelligence-logic/  # Layanan Python FastAPI (Mesin Prediksi)
 ├── docker/                  # Konfigurasi Docker & Nginx
-├── docker-compose.yml      # Konfigurasi Dasar
-└── docker-compose.prod.yml # Konfigurasi Produksi
+├── docker compose.yml      # Konfigurasi Dasar
+└── docker compose.prod.yml # Konfigurasi Produksi
 ```
 
 ## ✨ Fitur Utama
@@ -172,9 +172,9 @@ docker-compose exec app php artisan optimize
 
 ## 🆘 Troubleshooting (Penanganan Masalah)
 
-- **Cek Log Error**: `docker-compose exec app tail -n 100 storage/logs/laravel.log`
-- **Hapus Cache**: `docker-compose exec app php artisan optimize:clear`
-- **Backup Database**: `docker-compose exec db mysqldump -u root -p db_forecast > backup.sql`
+- **Cek Log Error**: `docker compose exec app tail -n 100 storage/logs/laravel.log`
+- **Hapus Cache**: `docker compose exec app php artisan optimize:clear`
+- **Backup Database**: `docker compose exec db mysqldump -u root -p db_forecast > backup.sql`
 
 ## 🚀 Deployment Produksi
 

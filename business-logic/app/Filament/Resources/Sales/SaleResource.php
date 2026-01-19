@@ -24,7 +24,7 @@ class SaleResource extends Resource
 
     protected static ?int $navigationSort = 20;
 
-    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-list-bullet';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedListBullet;
 
     protected static ?string $navigationLabel = 'Daftar Penjualan';
 

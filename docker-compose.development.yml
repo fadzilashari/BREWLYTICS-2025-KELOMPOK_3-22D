@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  # 1. Laravel App (PHP-FPM)
+  app:
+    build:
+      context: ./business-logic
+      dockerfile: Dockerfile
+    container_name: forecast-app-dev
+    restart: no
+    env_file:
+      - ./business-logic/.env.development
+    environment:
+      - APP_ENV=development
+      - APP_DEBUG=true
+    volumes:
+      - ./business-logic:/var/www
+    ports:
+      - "9000:9000"
+
+  # 2. AI Service (Python FastAPI)
+  ai-service:
+    build:
+      context: ./artificial-intelligence-logic
+      dockerfile: Dockerfile
+    container_name: forecast-ai-dev
+    restart: no
+    env_file:
+      - ./artificial-intelligence-logic/.env.development
+    environment:
+      - APP_ENV=development
+      - APP_DEBUG=true
+    volumes:
+      - ./artificial-intelligence-logic:/app
+    ports:
+      - "8025:8025"

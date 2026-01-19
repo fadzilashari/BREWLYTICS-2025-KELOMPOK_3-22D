@@ -20,13 +20,13 @@ class ActivityLogResource extends Resource
 {
     protected static ?string $model = Activity::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-circle-stack';
 
     protected static ?int $navigationSort = 30;
 
     protected static ?int $navigationGroupSort = 30;
 
-    protected static ?string $navigationLabel = 'Activity Logs';
+    protected static ?string $navigationLabel = 'Catatan Aktivitas';
 
     protected static ?string $recordTitleAttribute = 'Activities';
 

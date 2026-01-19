@@ -19,7 +19,7 @@ class RewardResource extends Resource
 {
     protected static ?string $model = Reward::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedStar;
 
     protected static ?int $navigationSort = 21;
 

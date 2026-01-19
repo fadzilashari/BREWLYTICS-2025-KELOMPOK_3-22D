@@ -1,0 +1,15 @@
+# Nama Pipeline
+name: Deploy Ke Server Debian
+
+# Kapan pipeline ini berjalan?
+on:
+  push:
+    branches: [main] # Hanya saat kita push ke branch main
+  pull_request:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name:

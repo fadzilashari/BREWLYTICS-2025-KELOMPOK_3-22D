@@ -20,7 +20,7 @@ class ForecastResource extends Resource
 {
     protected static ?string $model = \App\Models\ForecastReport::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-chart-bar-square';
 
     protected static ?string $navigationLabel = 'Forecast';
 
